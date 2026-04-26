@@ -14,4 +14,4 @@ jobs:
       - name: Lint
         run: flake8 . --max-line-length=120
       - name: Test
-        run: pytest Tests/Tests.py -v
+        run: pytest Tests.py -v
