@@ -158,11 +158,11 @@ def main() -> None:
             mode_var = tk.StringVar(value="voltage")
 
             ttk.Radiobutton(ohms_window, text="Calculate Voltage (V = I × R)", variable=mode_var, value="voltage",
-                             command=lambda: update_fields()).pack(anchor="w", padx=20)
+                            command=lambda: update_fields()).pack(anchor="w", padx=20)
             ttk.Radiobutton(ohms_window, text="Calculate Current (I = V ÷ R)", variable=mode_var, value="current",
-                             command=lambda: update_fields()).pack(anchor="w", padx=20)
+                            command=lambda: update_fields()).pack(anchor="w", padx=20)
             ttk.Radiobutton(ohms_window, text="Calculate Resistance (R = V ÷ I)", variable=mode_var, value="resistance",
-                             command=lambda: update_fields()).pack(anchor="w", padx=20)
+                            command=lambda: update_fields()).pack(anchor="w", padx=20)
 
             field_frame = ttk.Frame(ohms_window)
             field_frame.pack(pady=15, padx=20, fill="x")
@@ -303,8 +303,10 @@ def main() -> None:
             ttk.Label(cap_window, text="Capacitance Calculator").pack(pady=10)
             cap_option = tk.StringVar(value="1")
 
-            ttk.Radiobutton(cap_window, text="Calculate Capacitance (C = ε₀ × εᵣ × A / d)", variable=cap_option, value="1", command=lambda: update_cap_fields()).pack(anchor="w", padx=20)
-            ttk.Radiobutton(cap_window, text="Calculate Energy (E = 0.5 × C × V²)", variable=cap_option, value="2", command=lambda: update_cap_fields()).pack(anchor="w", padx=20)
+            ttk.Radiobutton(cap_window, text="Calculate Capacitance (C = ε₀ × εᵣ × A / d)", variable=cap_option,
+                            value="1", command=lambda: update_cap_fields()).pack(anchor="w", padx=20)
+            ttk.Radiobutton(cap_window, text="Calculate Energy (E = 0.5 × C × V²)", variable=cap_option, value="2",
+                            command=lambda: update_cap_fields()).pack(anchor="w", padx=20)
 
             cap_frame = ttk.Frame(cap_window)
             cap_frame.pack(pady=15, padx=20, fill="x")
