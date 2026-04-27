@@ -292,7 +292,7 @@ def main() -> None:
                 calc = calc_var.get()
                 mode = mode_var.get()
                 entries = [w for w in fields_frame.winfo_children() if isinstance(w, ttk.Entry)]
-                
+
                 # Handle Capacitance separately (comma-separated values)
                 if calc == "Series/Parallel":
                     values_str = entries[0].get()
