@@ -105,34 +105,47 @@ def power_menu() -> None:
 
 
 def capacitance_menu() -> None:
-    """Calculate capacitance using C = ε₀ × εᵣ × A / d."""
-    print("\n--- Capacitance Calculator ---")
-    print("1. Calculate Capacitance (C = ε₀ × εᵣ × A / d)")
-    print("2. Calculate Energy (E = 0.5 × C × V²)")
+    """Calculate capacitance and resistance in series/parallel."""
+    print("\n--- Capacitance/Resistance Calculator ---")
+    print("1. Capacitance in Series")
+    print("2. Capacitance in Parallel")
+    print("3. Resistance in Series")
+    print("4. Resistance in Parallel")
 
-    choice = input("Select (1-2): ").strip()
+    choice = input("Select (1-4): ").strip()
 
-    epsilon_0 = 8.854e-12  # Permittivity of free space (F/m)
+    if choice in ["1", "2", "3", "4"]:
+        values_str = input("Enter values separated by commas: ").strip()
+        try:
 
-    if choice == "1":
-        epsilon_r = get_float_input("Enter Relative Permittivity (εᵣ): ")
-        area = get_float_input("Enter Plate Area (m²): ")
-        if area == 0:
-            print("Error: Area cannot be zero.")
+            values = [float(x.strip()) for x in values_str.split(',') if x.strip()]
+            if not values:
+                print("Error: No valid values entered.")
+                return
+        except ValueError:
+            print("Error: Invalid input. Please enter numbers separated by commas.")
             return
-        distance = get_float_input("Enter Distance Between Plates (m): ")
-        if distance == 0:
-            print("Error: Distance cannot be zero.")
-            return
-        capacitance = (epsilon_0 * epsilon_r * area) / distance
-        print(f"Capacitance: {capacitance:.2e} F({capacitance * 1e12:.2f} pF)")
 
-    elif choice == "2":
-        capacitance = get_float_input("Enter Capacitance (Farads): ")
-        voltage = get_float_input("Enter Voltage (Volts): ")
-        energy = 0.5 * capacitance * (voltage ** 2)
-        print(f"Energy: {energy:.2e} J")
-
+        if choice == "1":  # Capacitance in Series
+            total = sum(1 / v for v in values)
+            if total == 0:
+                print("Error: Division by zero.")
+                return
+            result = 1 / total
+            print(f"Total Capacitance in Series: {result:.2e} F")
+        elif choice == "2":  # Capacitance in Parallel
+            result = sum(values)
+            print(f"Total Capacitance in Parallel: {result:.2e} F")
+        elif choice == "3":  # Resistance in Series
+            result = sum(values)
+            print(f"Total Resistance in Series: {result:.2f} Ω")
+        elif choice == "4":  # Resistance in Parallel
+            total = sum(1 / v for v in values)
+            if total == 0:
+                print("Error: Division by zero.")
+                return
+            result = 1 / total
+            print(f"Total Resistance in Parallel: {result:.2f} Ω")
     else:
         print("Error: Invalid selection.")
 
@@ -153,7 +166,7 @@ def main() -> None:
         ttk.Label(root, text="Select Calculator:").pack(pady=10)
         calc_var = tk.StringVar(value="Ohm's Law")
         calc_combo = ttk.Combobox(root, textvariable=calc_var,
-                                  values=["Ohm's Law", "Power", "Capacitance"], state="readonly")
+                                  values=["Ohm's Law", "Power", "Series/Parallel"], state="readonly")
         calc_combo.pack(pady=5)
         calc_combo.bind("<<ComboboxSelected>>", lambda e: update_calculator())
 
@@ -195,13 +208,17 @@ def main() -> None:
                                 command=update_fields).pack(anchor="w", padx=20)
                 ttk.Radiobutton(mode_frame, text="I = P ÷ V", variable=mode_var, value="4",
                                 command=update_fields).pack(anchor="w", padx=20)
-            elif calc == "Capacitance":
-                ttk.Label(mode_frame, text="Capacitance Calculator").pack(pady=5)
-                mode_var.set("1")
-                ttk.Radiobutton(mode_frame, text="Calculate Capacitance (C = ε₀ × εᵣ × A / d)",
-                                variable=mode_var, value="1", command=update_fields).pack(anchor="w", padx=20)
-                ttk.Radiobutton(mode_frame, text="Calculate Energy (E = 0.5 × C × V²)",
-                                variable=mode_var, value="2", command=update_fields).pack(anchor="w", padx=20)
+            elif calc == "Series/Parallel":
+                ttk.Label(mode_frame, text="Capacitance/Resistance Calculator").pack(pady=5)
+                mode_var.set("cap_series")
+                ttk.Radiobutton(mode_frame, text="Capacitance in Series (F)", variable=mode_var,
+                                value="cap_series", command=update_fields).pack(anchor="w", padx=20)
+                ttk.Radiobutton(mode_frame, text="Capacitance in Parallel (F)", variable=mode_var,
+                                value="cap_parallel", command=update_fields).pack(anchor="w", padx=20)
+                ttk.Radiobutton(mode_frame, text="Resistance in Series (Ω)", variable=mode_var,
+                                value="res_series", command=update_fields).pack(anchor="w", padx=20)
+                ttk.Radiobutton(mode_frame, text="Resistance in Parallel (Ω)", variable=mode_var,
+                                value="res_parallel", command=update_fields).pack(anchor="w", padx=20)
 
             update_fields()
 
@@ -264,30 +281,46 @@ def main() -> None:
                     ttk.Label(fields_frame, text="Voltage (V):").pack(anchor="w", pady=(10, 0))
                     entry2 = ttk.Entry(fields_frame)
                     entry2.pack(fill="x")
-            elif calc == "Capacitance":
-                if mode == "1":
-                    ttk.Label(fields_frame, text="Relative Permittivity (εᵣ):").pack(anchor="w")
+            elif calc == "Series/Parallel":
+                if mode in ["cap_series", "cap_parallel", "res_series", "res_parallel"]:
+                    ttk.Label(fields_frame, text="Enter values separated by commas:").pack(anchor="w")
                     entry1 = ttk.Entry(fields_frame)
                     entry1.pack(fill="x")
-                    ttk.Label(fields_frame, text="Plate Area (m²):").pack(anchor="w", pady=(10, 0))
-                    entry2 = ttk.Entry(fields_frame)
-                    entry2.pack(fill="x")
-                    ttk.Label(fields_frame, text="Distance Between Plates (m):").pack(anchor="w", pady=(10, 0))
-                    entry3 = ttk.Entry(fields_frame)
-                    entry3.pack(fill="x")
-                else:  # 2
-                    ttk.Label(fields_frame, text="Capacitance (F):").pack(anchor="w")
-                    entry1 = ttk.Entry(fields_frame)
-                    entry1.pack(fill="x")
-                    ttk.Label(fields_frame, text="Voltage (V):").pack(anchor="w", pady=(10, 0))
-                    entry2 = ttk.Entry(fields_frame)
-                    entry2.pack(fill="x")
 
         def calculate():
             try:
                 calc = calc_var.get()
                 mode = mode_var.get()
                 entries = [w for w in fields_frame.winfo_children() if isinstance(w, ttk.Entry)]
+                
+                # Handle Capacitance separately (comma-separated values)
+                if calc == "Series/Parallel":
+                    values_str = entries[0].get()
+                    values = [float(x.strip()) for x in values_str.split(',') if x.strip()]
+                    if not values:
+                        raise ValueError("No values entered")
+                    if mode == "cap_series":
+                        total = sum(1 / v for v in values)
+                        if total == 0:
+                            raise ZeroDivisionError
+                        result = 1 / total
+                        message = f"Total Capacitance in Series: {result:.2e} F"
+                    elif mode == "cap_parallel":
+                        result = sum(values)
+                        message = f"Total Capacitance in Parallel: {result:.2e} F"
+                    elif mode == "res_series":
+                        result = sum(values)
+                        message = f"Total Resistance in Series: {result:.2f} Ω"
+                    elif mode == "res_parallel":
+                        total = sum(1 / v for v in values)
+                        if total == 0:
+                            raise ZeroDivisionError
+                        result = 1 / total
+                        message = f"Total Resistance in Parallel: {result:.2f} Ω"
+                    messagebox.showinfo("Result", message)
+                    return
+
+                # Handle Ohm's Law and Power (individual numeric entries)
                 values = [float(e.get()) for e in entries]
 
                 if calc == "Ohm's Law":
@@ -323,18 +356,6 @@ def main() -> None:
                             raise ZeroDivisionError
                         result = a / b
                         message = f"Current: {result:.2f} A"
-                elif calc == "Capacitance":
-                    if mode == "1":
-                        epsilon_r, area, distance = values
-                        if area == 0 or distance == 0:
-                            raise ZeroDivisionError
-                        epsilon_0 = 8.854e-12
-                        capacitance = (epsilon_0 * epsilon_r * area) / distance
-                        message = f"Capacitance: {capacitance:.2e} F ({capacitance * 1e12:.2f} pF)"
-                    else:
-                        capacitance, voltage = values
-                        energy = 0.5 * capacitance * (voltage ** 2)
-                        message = f"Energy: {energy:.2e} J"
 
                 messagebox.showinfo("Result", message)
             except ValueError:
