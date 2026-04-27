@@ -6,8 +6,8 @@ An interactive electrical calculator that supports Ohm's Law, Power calculations
 
 - **Ohm's Law Calculator**: Calculate voltage, current, or resistance (V = I × R)
 - **Power Calculator**: Calculate power using various formulas (P = V × I, P = I² × R, etc.)
-- **Capacitance Calculator**: Calculate capacitance and stored energy
-- **Dual Interface**: Command-line interface and graphical user interface using Tkinter
+- **Capacitance/Resistance Calculator**: Calculate equivalent capacitance/resistance in series and parallel configurations
+- **Interface**: graphical user interface using Tkinter
 
 ## Installation
 

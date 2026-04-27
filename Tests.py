@@ -145,45 +145,43 @@ class TestPowerMenu:
         assert "Error: Invalid selection." in calls
 
 
-class TestCapacitanceMenu:
+class TestCapacitanceResistanceMenu:
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_calculate_capacitance(self, mock_print, mock_input):
-        mock_input.side_effect = ['1', '4.0', '0.01', '0.001']
+    def test_menu_capacitance_series(self, mock_print, mock_input):
+        mock_input.side_effect = ['1', '2.0, 3.0, 6.0']
         capacitance_menu()
         calls = [call.args[0] for call in mock_print.call_args_list]
-        # Expected: epsilon_0 * epsilon_r * area / distance = 8.854e-12 * 4 * 0.01 / 0.001 = 3.5416e-10 F
-        assert any("Capacitance: 3.54e-10 F" in call for call in calls)
+        assert "Total Capacitance in Series: 1.00e+00 F" in calls
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_calculate_energy(self, mock_print, mock_input):
-        mock_input.side_effect = ['2', '1e-9', '10.0']
+    def test_menu_capacitance_parallel(self, mock_print, mock_input):
+        mock_input.side_effect = ['2', '2.0, 3.0, 6.0']
         capacitance_menu()
         calls = [call.args[0] for call in mock_print.call_args_list]
-        # Expected: 0.5 * C * V^2 = 0.5 * 1e-9 * 100 = 5e-8 J
-        assert "Energy: 5.00e-08 J" in calls
+        assert "Total Capacitance in Parallel: 1.10e+01 F" in calls
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_zero_area(self, mock_print, mock_input):
-        mock_input.side_effect = ['1', '4.0', '0', '0.001']
+    def test_menu_resistance_series(self, mock_print, mock_input):
+        mock_input.side_effect = ['3', '5.0, 10.0']
         capacitance_menu()
         calls = [call.args[0] for call in mock_print.call_args_list]
-        assert "Error: Area cannot be zero." in calls
+        assert "Total Resistance in Series: 15.00 Ω" in calls
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_zero_distance(self, mock_print, mock_input):
-        mock_input.side_effect = ['1', '4.0', '0.01', '0']
+    def test_menu_resistance_parallel(self, mock_print, mock_input):
+        mock_input.side_effect = ['4', '5.0, 10.0']
         capacitance_menu()
         calls = [call.args[0] for call in mock_print.call_args_list]
-        assert "Error: Distance cannot be zero." in calls
+        assert "Total Resistance in Parallel: 3.33 Ω" in calls
 
     @patch('builtins.input')
     @patch('builtins.print')
-    def test_invalid_choice(self, mock_print, mock_input):
-        mock_input.return_value = '3'
+    def test_menu_invalid_selection(self, mock_print, mock_input):
+        mock_input.return_value = '9'
         capacitance_menu()
         calls = [call.args[0] for call in mock_print.call_args_list]
         assert "Error: Invalid selection." in calls
