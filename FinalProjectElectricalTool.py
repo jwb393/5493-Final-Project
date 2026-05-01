@@ -372,5 +372,6 @@ def main() -> None:
     create_gui()
 
 
+# Main function to run the electrical calculator tool
 if __name__ == "__main__":
     main()
